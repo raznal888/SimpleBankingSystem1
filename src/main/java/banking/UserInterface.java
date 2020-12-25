@@ -10,8 +10,8 @@ class UserInterface {
     private Menu accountMenu;
     private Menu currentMenu;
 
-    UserInterface(Scanner scanner) {
-        MANAGER = new AccountManager();
+    UserInterface(Scanner scanner, String url) {
+        MANAGER = new AccountManager(url);
         this.SCANNER = scanner;
 
         mainMenu = new Menu(this);
