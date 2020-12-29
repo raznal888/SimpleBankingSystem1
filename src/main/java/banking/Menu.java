@@ -3,7 +3,7 @@ package banking;
 import java.util.ArrayList;
 
 class Menu {
-    private ArrayList<MenuItem> items;
+    private final ArrayList<MenuItem> items;
 
     Menu(UserInterface ui) {
         items = new ArrayList<>();
@@ -11,11 +11,10 @@ class Menu {
     }
 
     void executeCommand(String command) {
-        for (MenuItem item: items) {
-            if (item.getID().equals(command)) {
-                item.getFunction().run();
-            }
-        }
+        items.stream()
+                .filter(item -> command.equals(item.getID()))
+                .findFirst()
+                .ifPresent(menuItem -> menuItem.getFunction().run());
     }
 
     void addItem(MenuItem item) {
@@ -30,7 +29,6 @@ class Menu {
             menu.append(items.get(i).toString());
             menu.append("\n");
         }
-
         menu.append(items.get(0).toString());
 
         return menu.toString();

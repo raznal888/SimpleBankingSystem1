@@ -3,54 +3,79 @@ package banking;
 import java.util.Random;
 
 class Account {
-    private final Random RANDOM = new Random();
-    private final String CARD_NUMBER;
-    private final String PIN;
-    private double balance;
+    private static final Random random = new Random();
+    private String cardNumber;
+    private String pin;
+    private int balance;
 
     Account() {
-        CARD_NUMBER = generateCardNumber();
-        PIN = generatePIN();
+        cardNumber = generateCardNumber();
+        pin = generatePIN();
         balance = 0;
     }
 
-    String getCARD_NUMBER() {
-        return CARD_NUMBER;
+    static int luhnAlgorithmChecksum(String cardNumber) {
+
+        int end = cardNumber.length() == 16 ? cardNumber.length() - 1 : cardNumber.length();
+
+        int luhnSum = 0;
+        for (int i = 0; i < end; i++) {
+            int digit = Character.getNumericValue(cardNumber.charAt(i));
+
+            if (i % 2 == 0) {
+                digit = (2 * digit > 9) ? (2 * digit - 9) : 2 * digit;
+            }
+
+            luhnSum += digit;
+        }
+
+        if (cardNumber.length() == 16) {
+            luhnSum += Character.getNumericValue(cardNumber.charAt(cardNumber.length() - 1));
+        }
+
+        return (10 - (luhnSum % 10)) % 10;
+
     }
 
-    String getPIN() {
-        return PIN;
+    String getCardNumber() {
+        return cardNumber;
     }
 
-    double getBalance() {
+    String getPin() {
+        return pin;
+    }
+
+    int getBalance() {
         return balance;
+    }
+
+    void setBalance(int amount) {
+        balance += amount;
+    }
+
+    void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    void setPin(String pin) {
+        this.pin = pin;
     }
 
     private String generateCardNumber() {
         StringBuilder cardNumber = new StringBuilder("400000");
 
-        int luhnSum = 8;
-        for (int i = 0; i < 9; i++) {
-            int digit = RANDOM.nextInt(10);
-            cardNumber.append(digit);
-            if (i % 2 == 0) {
-                digit = 2 * digit > 9 ? 2 * digit - 9 : 2 * digit;
-            }
-            luhnSum += digit;
-        }
+        String accountIdentifier = String.format("%09d", random.nextInt(1_000_000_000));
+        cardNumber.append(accountIdentifier);
 
-        int lastDigit = (10 - (luhnSum % 10)) % 10;
+        int lastDigit = luhnAlgorithmChecksum(cardNumber.toString());
         cardNumber.append(lastDigit);
 
         return cardNumber.toString();
     }
 
     private String generatePIN() {
-        StringBuilder pin = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            pin.append(RANDOM.nextInt(10));
-        }
+        int pin = random.nextInt(10_000);
 
-        return pin.toString();
+        return String.format("%04d", pin);
     }
 }

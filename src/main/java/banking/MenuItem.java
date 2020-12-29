@@ -1,9 +1,9 @@
 package banking;
 
 class MenuItem {
-    private String ID;
-    private String description;
-    private Runnable function;
+    private final String ID;
+    private final String description;
+    private final Runnable function;
 
     MenuItem(String ID, String name, Runnable function) {
         this.ID = ID;
@@ -15,10 +15,6 @@ class MenuItem {
         return ID;
     }
 
-    String getDescription() {
-        return description;
-    }
-
     Runnable getFunction() {
         return function;
     }
@@ -27,4 +23,6 @@ class MenuItem {
     public String toString() {
         return ID + ". " + description;
     }
+
+
 }
